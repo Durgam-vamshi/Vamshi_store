@@ -1,8 +1,7 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import About from "./About";
 import Home from "./Home";
-import Products from "./Products";
 import Contact from "./Contact";
 import Cart from "./Cart";
 import SingleProduct from "./SingleProduct";
@@ -12,6 +11,9 @@ import { ThemeProvider } from "styled-components";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
+// Lazy load the Products component
+const Products = lazy(() => import("./Products"));
+
 const App = () => {
   const theme = {
     colors: {
@@ -20,7 +22,6 @@ const App = () => {
       white: "#fff",
       black: " #212529",
       helper: "#8490ff",
-
       bg: "#F6F8FA",
       footer_bg: "#0a1435",
       btn: "rgb(98 84 243)",
@@ -43,15 +44,17 @@ const App = () => {
       <Router>
         <GlobalStyle />
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/singleproduct/:id" element={<SingleProduct />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/singleproduct/:id" element={<SingleProduct />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </Suspense>
         <Footer />
       </Router>
     </ThemeProvider>
@@ -59,3 +62,4 @@ const App = () => {
 };
 
 export default App;
+
